@@ -1,0 +1,71 @@
+
+CREATE TABLE Transaction (
+  transaction_id INT PRIMARY KEY,
+  amount DECIMAL(10, 2) NOT NULL,
+  status VARCHAR(50) NOT NULL,
+  timestamp DATE NOT NULL,
+  reason VARCHAR(100) NOT NULL,
+  from_id INT,
+  to_id INT,
+  category VARCHAR(50) NOT NULL,
+  FOREIGN KEY (from_id) REFERENCES User(user_id),
+  FOREIGN KEY (to_id) REFERENCES User(user_id)
+);
+
+INSERT INTO Transaction (transaction_id, amount, status, timestamp, reason, from_id, to_id, category)
+VALUES
+  (1, 100.00, 'Success', '2020-01-01', 'Transferencia', 1, 2, 'Transferencia'),
+  (2, 50.00, 'Success', '2020-01-15', 'Pago de servicios', 1, 3, 'Pago de servicios'),
+  (3, 200.00, 'Success', '2020-02-01', 'Transferencia', 2, 1, 'Transferencia'),
+  (4, 150.00, 'Success', '2020-02-15', 'Pago de servicios', 2, 4, 'Pago de servicios'),
+  (5, 300.00, 'Success', '2020-03-01', 'Transferencia', 3, 2, 'Transferencia');
+
+
+CREATE TABLE User (
+  user_id INT PRIMARY KEY,
+  name VARCHAR(50) NOT NULL,
+  balance DECIMAL(10, 2) NOT NULL,
+  password VARCHAR(50) NOT NULL
+);
+
+INSERT INTO User (user_id, name, balance, password)
+VALUES
+  (1, 'Lucas Martínez', 1000.00, 'password123'),
+  (2, 'María González', 500.00, 'password456'),
+  (3, 'Pedro Grajal', 2000.00, 'password789'),
+  (4, 'Luis Hernández', 1500.00, 'password012'),
+  (5, 'Ana Coye', 3000.00, 'password345');
+
+CREATE TABLE Contact (
+  user_id INT,
+  friend_id INT,
+  PRIMARY KEY (user_id, friend_id),
+  FOREIGN KEY (user_id) REFERENCES User(user_id),
+  FOREIGN KEY (friend_id) REFERENCES User(user_id)
+);
+
+INSERT INTO Contact (user_id, friend_id)
+VALUES
+  (1, 2),
+  (1, 3),
+  (2, 1),
+  (2, 4),
+  (3, 2);
+
+
+CREATE TABLE User_Details (
+  user_id INT,
+  phone VARCHAR(20) NOT NULL,
+  nadh_doc VARCHAR(20) NOT NULL,
+  account_no VARCHAR(20) NOT NULL,
+  PRIMARY KEY (user_id),
+  FOREIGN KEY (user_id) REFERENCES User(user_id)
+);
+
+INSERT INTO User_Details (user_id, phone, nadh_doc, account_no)
+VALUES
+  (1, '1234567890', '1234567890', '1234567890'),
+  (2, '9876543210', '9876543210', '9876543210'),
+  (3, '1111111111', '1111111111', '1111111111'),
+  (4, '2222222222', '2222222222', '2222222222'),
+  (5, '3333333333', '3333333333', '3333333333');
