@@ -1,317 +1,76 @@
--- Creación de tabla ubicaciones 
-CREATE TABLE Ubicaciones (
-  IdUbicacion INT PRIMARY KEY,
-  Nombre VARCHAR(50) NOT NULL,
-  Direccion VARCHAR(100) NOT NULL,
-  Ciudad VARCHAR(50) NOT NULL,
-  Estado VARCHAR(50) NOT NULL, 
-  País VARCHAR(50) NOT NULL
-);
-
-INSERT INTO Ubicaciones (IdUbicacion, Nombre, Direccion, Ciudad, Estado, País)
-VALUES
-  (1, 'Oficina Central', 'Calle 823', 'Ciudad de México', 'Mexico', 'México'),
-  (2, 'Oficina Norte', 'Calle 406', 'Monterrey', 'Norte', 'México'),
-  (3, 'Oficina Sur', 'Calle 784', 'Guadalajara', 'Sur', 'México'),
-  (4, 'Oficina Este', 'Calle 1021', 'Puebla', 'Este', 'México'),
-  (5, 'Oficina Oeste', 'Calle 1203', 'Tijuana', 'Oeste', 'México');
-
--- Creación de tabla de expedientes
-CREATE TABLE Expedientes (
-  IdExpediente INT PRIMARY KEY,
-  IdUbicacion INT,
-  FechaCreación DATE NOT NULL,
-  FechaCierre DATE,
-  Estado VARCHAR(50) NOT NULL,
-  FOREIGN KEY (IdUbicacion) REFERENCES Ubicaciones(IdUbicacion)
-);
-
-INSERT INTO Expedientes (IdExpediente, IdUbicacion, FechaCreación, FechaCierre, Estado)
-VALUES
-  (1, 1, '2020-01-01', '2020-01-31', 'Abierto'),
-  (2, 2, '2020-02-01', '2020-02-28', 'Abierto'),
-  (3, 3, '2020-03-01', '2020-03-31', 'Abierto'),
-  (4, 4, '2020-04-01', '2020-04-30', 'Abierto'),
-  (5, 5, '2020-05-01', '2020-05-31', 'Abierto');
-
--- Creación de tabla de documentos 
-CREATE TABLE Documentos (
-  IdDocumento INT PRIMARY KEY,
-  IdExpediente INT,
-  TipoDocumento VARCHAR(50) NOT NULL,
-  FechaCreación DATE NOT NULL,
-  Descripción VARCHAR(100) NOT NULL,
-  FOREIGN KEY (IdExpediente) REFERENCES Expedientes(IdExpediente)
-);
-
-INSERT INTO Documentos (IdDocumento, IdExpediente, TipoDocumento, FechaCreación, Descripción)
-VALUES
-  (1, 1, 'Acta de Nacimiento', '2020-01-01', 'Acta de nacimiento de Lucas Martínez'),
-  (2, 1, 'Certificado de Estudios', '2020-01-15', 'Certificado de estudios de Lucas Martínez'),
-  (3, 2, 'Acta de Matrimonio', '2020-02-01', 'Acta de matrimonio de Lucas Martínez' y María González'),
-  (4, 3, 'Certificado de Trabajo', '2020-03-01', 'Certificado de trabajo de Lucas Martínez''),
-  (5, 4, 'Acta de Defunción', '2020-04-01', 'Acta de defunción de Lucas Martínez'');
-
-
--- Creación de tabla de personas
-CREATE TABLE Personas (
-  IdPersona INT PRIMARY KEY,
-  Nombre VARCHAR(50) NOT NULL,
-  Apellido VARCHAR(50) NOT NULL,
-  FechaNacimiento DATE NOT NULL,
-  Domicilio VARCHAR(100) NOT NULL,
-  Ciudad VARCHAR(50) NOT NULL,
-  Estado VARCHAR(50) NOT NULL,
-  País VARCHAR(50) NOT NULL
-);
-
-INSERT INTO Personas (IdPersona, Nombre, Apellido, FechaNacimiento, Domicilio, Ciudad, Estado, País)
-VALUES
-  (1, 'Lucas', 'Martínez', '1990-01-01', 'Calle 123', 'Ciudad de México', 'Mexico', 'México'),
-  (2, 'María', 'González', '1992-02-01', 'Calle 456', 'Monterrey', 'Norte', 'México'),
-  (3, 'Pedro', 'García', '1995-03-01', 'Calle 789', 'Guadalajara', 'Sur', 'México'),
-  (4, 'Luis', 'Hernández', '1998-04-01', 'Calle 1011', 'Puebla', 'Este', 'México'),
-  (5, 'Ana', 'Coye', '2000-05-01', 'Calle 1213', 'Tijuana', 'Oeste', 'México');
-
--- Creación de tabla de roles
-CREATE TABLE Roles (
-  IdRol INT PRIMARY KEY,
-  Nombre VARCHAR(50) NOT NULL
-);
-
-INSERT INTO Roles (IdRol, Nombre)
-VALUES
-  (1, 'Administrador'),
-  (2, 'Asistente'),
-  (3, 'Jefe de Departamento');
-
--- Creación de tabla de usuarios
+-- Creación de tablas
 CREATE TABLE Usuarios (
-  IdUsuario INT PRIMARY KEY,
-  IdPersona INT,
-  IdRol INT,
-  Contraseña VARCHAR(50) NOT NULL,
-  FOREIGN KEY (IdPersona) REFERENCES Personas(IdPersona),
-  FOREIGN KEY (IdRol) REFERENCES Roles(IdRol)
+  usuario_id INT PRIMARY KEY,
+  nombre VARCHAR(50),
+  nombre_usuario VARCHAR(50),
+  contraseña VARCHAR(50),
+  rol VARCHAR(50)
 );
 
-INSERT INTO Usuarios (IdUsuario, IdPersona, IdRol, Contraseña)
-VALUES
-  (1, 1, 1, 'admin120'),
-  (2, 2, 2, 'asistente183'),
-  (3, 3, 3, 'jefe163');
-
--- Creación de tabla de accesos
-CREATE TABLE Accesos (
-  IdAcceso INT PRIMARY KEY,
-  IdUsuario INT,
-  IdUbicacion INT,
-  FechaAcceso DATE NOT NULL,
-  FOREIGN KEY (IdUsuario) REFERENCES Usuarios(IdUsuario),
-  FOREIGN KEY (IdUbicacion) REFERENCES Ubicaciones(IdUbicacion)
+CREATE TABLE Aseguradoras (
+  aseguradora_id INT PRIMARY KEY,
+  nombre VARCHAR(50)
 );
 
-INSERT INTO Accesos (IdAcceso, IdUsuario, IdUbicacion, FechaAcceso)
-VALUES
-  (1, 1, 1, '2020-01-01'),
-  (2, 1, 2, '2020-01-15'),
-  (3, 2, 3, '2020-02-01'),
-  (4, 3, 4, '2020-03-01'),
-  (5, 4, 5, '2020-04-01');
-
-
--- Creación de tabla de las historias de accesos
-CREATE TABLE HistorialAccesos (
-  IdHistorial INT PRIMARY KEY,
-  IdAcceso INT,
-  FechaAcceso DATE NOT NULL,
-  FOREIGN KEY (IdAcceso) REFERENCES Accesos(IdAcceso)
+CREATE TABLE Juzgados (
+  juzgado_id INT PRIMARY KEY,
+  nombre VARCHAR(50),
+  ubicacion VARCHAR(100)
 );
 
-INSERT INTO HistorialAccesos (IdHistorial, IdAcceso, FechaAcceso)
-VALUES
-  (1, 1, '2020-01-01'),
-  (2, 1, '2020-01-15'),
-  (3, 2, '2020-02-01'),
-  (4, 3, '2020-03-01'),
-  (5, 4, '2020-04-01');
-
--- Creación de tabla de las notificaciones
-CREATE TABLE Notificaciones (
-  IdNotificación INT PRIMARY KEY,
-  IdExpediente INT,
-  TipoNotificación VARCHAR(50) NOT NULL,
-  FechaNotificación DATE NOT NULL,
-  Descripción VARCHAR(100) NOT NULL,
-  FOREIGN KEY (IdExpediente) REFERENCES Expedientes(IdExpediente)
+CREATE TABLE Expedientes (
+  expediente_id INT PRIMARY KEY,
+  id_expediente INT,
+  conductor VARCHAR(50),
+  aseguradora_id INT,
+  numero_caso VARCHAR(20),
+  estado INT,
+  fecha_creacion DATE,
+  usuario_id INT,
+  juzgado_id INT,
+  FOREIGN KEY (aseguradora_id) REFERENCES Aseguradoras (aseguradora_id),
+  FOREIGN KEY (usuario_id) REFERENCES Usuarios (usuario_id),
+  FOREIGN KEY (juzgado_id) REFERENCES Juzgados (juzgado_id)
 );
 
-INSERT INTO Notificaciones (IdNotificación, IdExpediente, TipoNotificación, FechaNotificación, Descripción)
-VALUES
-  (1, 1, 'Nueva Documentación', '2020-01-01', 'Se ha agregado nueva documentación al expediente'),
-  (2, 1, 'Actualización de Estado', '2020-01-15', 'El estado del expediente ha sido actualizado'),
-  (3, 2, 'Nueva Documentación', '2020-02-01', 'Se ha agregado nueva documentación al expediente'),
-  (4, 3, 'Actualización de Estado', '2020-03-01', 'El estado del expediente ha sido actualizado'),
-  (5, 4, 'Nueva Documentación', '2020-04-01', 'Se ha agregado nueva documentación al expediente');
+CREATE TABLE Estados (estado_id INT PRIMARY KEY, nombre VARCHAR(50));
 
--- Creación de tabla de archivos
-CREATE TABLE Archivos (
-  IdArchivo INT PRIMARY KEY,
-  IdDocumento INT,
-  NombreArchivo VARCHAR(100) NOT NULL,
-  TipoArchivo VARCHAR(50) NOT NULL,
-  FechaSubida DATE NOT NULL,
-  FOREIGN KEY (IdDocumento) REFERENCES Documentos(IdDocumento)
+CREATE TABLE Reportes (
+  reporte_id INT PRIMARY KEY,
+  expediente_id INT,
+  descripcion TEXT,
+  fecha DATE,
+  FOREIGN KEY (expediente_id) REFERENCES Expedientes (expediente_id)
 );
 
-INSERT INTO Archivos (IdArchivo, IdDocumento, NombreArchivo, TipoArchivo, FechaSubida)
+-- Creación de relaciones
+ALTER TABLE Expedientes ADD FOREIGN KEY (estado) REFERENCES Estados (estado_id);
+Respuesta
+-- Agregar registros a la tabla Aseguradoras
+INSERT INTO Aseguradoras (aseguradora_id, nombre)
 VALUES
-  (1, 1, 'acta_nacimiento.pdf', 'PDF', '2020-01-01'),
-  (2, 1, 'certificado_estudios.pdf', 'PDF', '2020-01-15'),
-  (3, 2, 'acta_matrimonio.pdf', 'PDF', '2020-02-01'),
-  (4, 3, 'certificado_trabajo.pdf', 'PDF', '2020-03-01'),
-  (5, 4, 'acta_defunción.pdf', 'PDF', '2020-04-01');
+  (1, 'ASSA'),
+  (2, 'ANCON'),
+  (3, 'INTEROCEANICA'),
+  (4, 'PARTICULAR');
 
--- Creación de tabla del historial de archivos 
-CREATE TABLE HistorialArchivos (
-  IdHistorial INT PRIMARY KEY,
-  IdArchivo INT,
-  FechaSubida DATE NOT NULL,
-  FOREIGN KEY (IdArchivo) REFERENCES Archivos(IdArchivo)
-);
-
-INSERT INTO HistorialArchivos (IdHistorial, IdArchivo, FechaSubida)
+-- Agregar registros a la tabla Juzgados
+INSERT INTO Juzgados (juzgado_id, nombre, ubicacion)
 VALUES
-  (1, 1, '2020-01-01'),
-  (2, 1, '2020-01-15'),
-  (3, 2, '2020-02-01'),
-  (4, 3, '2020-03-01'),
-  (5, 4, '2020-04-01');
-
--- Creación de tabla de configuración
-CREATE TABLE Configuración (
-  IdConfiguración INT PRIMARY KEY,
-  IdUbicación INT,
-  FechaConfiguración DATE NOT NULL,
-  Descripción VARCHAR(100) NOT NULL,
-  FOREIGN KEY (IdUbicación) REFERENCES Ubicaciones(IdUbicación)
-);
-
-INSERT INTO Configuración (IdConfiguración, IdUbicación, FechaConfiguración, Descripción)
+  (1, 'JUZGADO 5TO (PEDREGAL)', 'Calle 423'),
+  (2, 'JUZGADO 4TO (PEDREGAL)', 'Calle 156'),
+  (3, 'JUZGADO 5TO (PEDREGAL)', 'Calle 789'),
+  (4, 'JUZGADO 1RO (PEDREGAL)', 'Calle 111'),
+  (5, 'JUZGADO 3RO (PEDREGAL)', 'Calle 13'),
+  (6, 'ALCALDIA DE PANAMA', 'Calle 1334'),
+  (7, 'CHITRE', 'Calle 890');
+-- Agregar registros a la tabla Usuarios
+INSERT INTO Usuarios (usuario_id, nombre, nombre_usuario, contraseña, rol)
 VALUES
-  (1, 1, '2020-01-01', 'Configuración de la oficina central'),
-  (2, 2, '2020-01-15', 'Configuración de la oficina norte'),
-  (3, 3, '2020-02-01', 'Configuración de la oficina sur'),
-  (4, 4, '2020-03-01', 'Configuración de la oficina este'),
-  (5, 5, '2020-04-01', 'Configuración de la oficina oeste');
-
--- Creación de tabla del historial de configuración 
-CREATE TABLE HistorialConfiguración (
-  IdHistorial INT PRIMARY KEY,
-  IdConfiguración INT,
-  FechaConfiguración DATE NOT NULL,
-  FOREIGN KEY (IdConfiguración) REFERENCES Configuración(IdConfiguración)
-);
-
-INSERT INTO HistorialConfiguración (IdHistorial, IdConfiguración, FechaConfiguración)
-VALUES
-  (1, 1, '2020-01-01'),
-  (2, 1, '2020-01-15'),
-  (3, 2, '2020-02-01'),
-  (4, 3, '2020-03-01'),
-  (5, 4, '2020-04-01');
-
--- Creación de tabla de las notificaciones de configuración
-CREATE TABLE NotificacionesConfiguración (
-  IdNotificación INT PRIMARY KEY,
-  IdConfiguración INT,
-  TipoNotificación VARCHAR(50) NOT NULL,
-  FechaNotificación DATE NOT NULL,
-  Descripción VARCHAR(100) NOT NULL,
-  FOREIGN KEY (IdConfiguración) REFERENCES Configuración(IdConfiguración)
-);
-
-INSERT INTO NotificacionesConfiguración (IdNotificación, IdConfiguración, TipoNotificación, FechaNotificación, Descripción)
-VALUES
-  (1, 1, 'Nueva Configuración', '2020-01-01', 'Se ha agregado nueva configuración'),
-  (2, 1, 'Actualización de Configuración', '2020-01-15', 'La configuración ha sido actualizada'),
-  (3, 2, 'Nueva Configuración', '2020-02-01', 'Se ha agregado nueva configuración'),
-  (4, 3, 'Actualización de Configuración', '2020-03-01', 'La configuración ha sido actualizada'),
-  (5, 4, 'Nueva Configuración', '2020-04-01', 'Se ha agregado nueva configuración');
-
--- Creación de tabla de archivos de la configuración
-CREATE TABLE ArchivosConfiguración (
-  IdArchivo INT PRIMARY KEY,
-  IdConfiguración INT,
-  NombreArchivo VARCHAR(100) NOT NULL,
-  TipoArchivo VARCHAR(50) NOT NULL,
-  FechaSubida DATE NOT NULL,
-  FOREIGN KEY (IdConfiguración) REFERENCES Configuración(IdConfiguración)
-);
-
-INSERT INTO ArchivosConfiguración (IdArchivo, IdConfiguración, NombreArchivo, TipoArchivo, FechaSubida)
-VALUES
-  (1, 1, 'configuracion_oficina_central.pdf', 'PDF', '2020-01-01'),
-  (2, 1, 'configuracion_oficina_norte.pdf', 'PDF', '2020-01-15'),
-  (3, 2, 'configuracion_oficina_sur.pdf', 'PDF', '2020-02-01'),
-  (4, 3, 'configuracion_oficina_este.pdf', 'PDF', '2020-03-01'),
-  (5, 4, 'configuracion_oficina_oeste.pdf', 'PDF', '2020-04-01');
-
--- Creación de tabla del historial de archivos de la configuración
-CREATE TABLE HistorialArchivosConfiguración (
-  IdHistorial INT PRIMARY KEY,
-  IdArchivo INT,
-  FechaSubida DATE NOT NULL,
-  FOREIGN KEY (IdArchivo) REFERENCES ArchivosConfiguración(IdArchivo)
-);
-
-INSERT INTO HistorialArchivosConfiguración (IdHistorial, IdArchivo, FechaSubida)
-VALUES
-  (1, 1, '2020-01-01'),
-  (2, 1, '2020-01-15'),
-  (3, 2, '2020-02-01'),
-  (4, 3, '2020-03-01'),
-  (5, 4, '2020-04-01');
-
--- Creación de tabla de notificaciones de archivos de la configuración
-CREATE TABLE NotificacionesArchivosConfiguración (
-  IdNotificación INT PRIMARY KEY,
-  IdArchivo INT,
-  TipoNotificación VARCHAR(50) NOT NULL,
-  FechaNotificación DATE NOT NULL,
-  Descripción VARCHAR(100) NOT NULL,
-  FOREIGN KEY (IdArchivo) REFERENCES ArchivosConfiguración(IdArchivo)
-);
-
-INSERT INTO NotificacionesArchivosConfiguración (IdNotificación, IdArchivo, TipoNotificación, FechaNotificación, Descripción)
-VALUES
-  (1, 1, 'Nueva Configuración', '2020-01-01', 'Se ha agregado nueva configuración'),
-  (2, 1, 'Actualización de Configuración', '2020-01-15', 'La configuración ha sido actualizada'),
-  (3, 2, 'Nueva Configuración', '2020-02-01', 'Se ha agregado nueva configuración'),
-  (4, 3, 'Actualización de Configuración', '2020-03-01', 'La configuración ha sido actualizada'),
-  (5, 4, 'Nueva Configuración', '2020-04-01', 'Se ha agregado nueva configuración');
-
--- Creación de tabla de accesos de archivos de la configuración
-CREATE TABLE AccesosArchivosConfiguración (
-  IdAcceso INT PRIMARY KEY,
-  IdArchivo INT,
-  IdUsuario INT,
-  FechaAcceso DATE NOT NULL,
-  FOREIGN KEY (IdArchivo) REFERENCES ArchivosConfiguración(IdArchivo),
-  FOREIGN KEY (IdUsuario) REFERENCES Usuarios(IdUsuario)
-);
-
-INSERT INTO AccesosArchivosConfiguración (IdAcceso, IdArchivo, IdUsuario, FechaAcceso)
-VALUES
-  (1, 1, 1, '2020-01-01'),
-  (2, 1, 2, '2020-01-15'),
-  (3, 2, 3, '2020-02-01'),
-  (4, 3, 4, '2020-03-01'),
-  (5, 4, 5, '2020-04-01');
-
--- Creación de tabla del historial de los accesos de archivos de la configuración
-CREATE TABLE HistorialAccesosArchivosConfiguración (
-  IdHistorial INT PRIMARY KEY,
-  IdAcceso INT,
-  FechaAcceso DATE NOT NULL,
-  FOREIGN KEY (IdAcceso) REFERENCES Acces
+  (1, 'ANTHONY TREJOS', 'anthonytrejos', 'password111', 'Administrador'),
+  (2, 'LUIS MOLINA', 'luismolina', 'password222', 'Asistente'),
+  (3, 'KATHERINE KENT', 'katherinekent', 'password333', 'Juez'),
+  (4, 'MARTIN ALVARADO', 'martinalvarado', 'password012', 'Asistente'),
+  (5, 'JOEL ARAUZ RODRIGUEZ', 'joelarauz', 'password445', 'Juez'),
+  (6, 'MICHELLE VEGA', 'michellevega', 'password789', 'Asistente'),
+  (7, 'CANDICE HENRY', 'candicehenry', 'password777', 'Juez');
