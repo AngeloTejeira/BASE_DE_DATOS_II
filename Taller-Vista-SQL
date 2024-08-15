@@ -1,0 +1,88 @@
+CREATE SCHEMA `ProviderWarehouse` ; 
+USE `ProviderWarehouse` ; 
+CREATE TABLE Vendor ( 
+ VendorID VARCHAR(10) PRIMARY KEY, 
+ StatusCode INT, 
+ Provider VARCHAR(20), 
+ City VARCHAR(20) 
+); 
+CREATE TABLE Part ( 
+ PartID VARCHAR(10) PRIMARY KEY, 
+ Color VARCHAR(20), 
+ Weight DECIMAL(5,2), 
+ MfCity VARCHAR(20) 
+); 
+CREATE TABLE Project ( 
+ ProjectID VARCHAR(10) PRIMARY KEY, 
+ Name VARCHAR(20), 
+ City VARCHAR(20) 
+); 
+CREATE TABLE Reports ( 
+ VendorID VARCHAR(10), 
+ PartID VARCHAR(10), 
+ ProjectID VARCHAR(10), 
+ Quantity INT, 
+ SupplyDate DATE, 
+ QuantitySupplied INT, 
+ PRIMARY KEY (VendorID, PartID, ProjectID), 
+ FOREIGN KEY (VendorID) REFERENCES Vendor(VendorID), 
+ FOREIGN KEY (PartID) REFERENCES Part(PartID), 
+ FOREIGN KEY (ProjectID) REFERENCES Project(ProjectID) 
+); 
+ALTER TABLE Vendor 
+ADD CONSTRAINT check_vendor_status CHECK (StatusCode BETWEEN 1 AND 50); 
+INSERT INTO Vendor (VendorID, Provider, StatusCode, City) 
+VALUES 
+ ('V1', 'Smith', 20, 'London'), 
+ ('V2', 'Jones', 10, 'Paris'), 
+ ('V3', 'Blake', 30, 'Paris'), 
+ ('V4', 'Clark', 20, 'London'), 
+ ('V5', 'Adams', 30, 'Athens'); 
+INSERT INTO Part (PartID, Color, Weight, MfCity) 
+VALUES 
+ ('P1', 'Red', 12.0, 'London'), 
+ ('P2', 'Green', 17.0, 'Paris'), 
+ ('P3', 'Blue', 17.0, 'Rome'), 
+ ('P4', 'Red', 14.0, 'London'), 
+ ('P5', 'Blue', 12.0, 'Paris'), 
+ ('P6', 'Red', 19.0, 'London'); 
+INSERT INTO Project (ProjectID, Name, City) 
+VALUES 
+ ('Y1', 'Classifier', 'Paris'), 
+ ('Y2', 'Monitor', 'Rome'), 
+ ('Y3', 'OCR', 'Athens'), 
+ ('Y4', 'Console', 'Athens'), 
+ ('Y5', 'RAID', 'London'), 
+ ('Y6', 'EDS', 'Oslo'), 
+ ('Y7', 'Tape', 'London'); 
+INSERT INTO Reports (VendorID, PartID, ProjectID, Quantity, SupplyDate, QuantitySupplied) 
+VALUES 
+ ('V1', 'P1', 'Y1', 200, '2024-07-10', 25), 
+('V2', 'P3', 'Y7', 400, '2023-11-28', 45), 
+ ('V2', 'P3', 'Y5', 500, '2021-03-19', 70), 
+ ('V2', 'P3', 'Y3', 600, '2024-09-06', 125), 
+ ('V2', 'P3', 'Y6', 400, '2023-08-14', 300), 
+ ('V2', 'P5', 'Y1', 100, '2023-01-27', 24), 
+ ('V3', 'P3', 'Y2', 200, '2024-05-08', 127), 
+ ('V3', 'P4', 'Y5', 500, '2023-12-03', 394), 
+ ('V4', 'P6', 'Y7', 300, '2020-02-12', 215); 
+CREATE VIEW Vendor_QuantitySupplied AS 
+SELECT VendorID, SUM(QuantitySupplied) AS TotalQuantitySupplied 
+FROM Reports 
+GROUP BY VendorID; 
+CREATE VIEW Part_TotalQuantitySupplied AS 
+SELECT PartID, SUM(QuantitySupplied) AS TotalQuantitySupplied 
+FROM Reports 
+GROUP BY PartID; 
+CREATE VIEW Project_NumReports AS 
+SELECT ProjectID, COUNT(*) AS NumReports 
+FROM Reports 
+GROUP BY ProjectID; 
+CREATE VIEW Project_TotalQuantitySupplied AS 
+SELECT ProjectID, SUM(QuantitySupplied) AS TotalQuantitySupplied 
+FROM Reports 
+GROUP BY ProjectID; 
+CREATE VIEW VendorPart_TotalQuantitySupplied AS 
+SELECT VendorID, PartID, SUM(QuantitySupplied) AS TotalQuantitySupplied 
+FROM Reports 
+GROUP BY VendorID, PartID;
